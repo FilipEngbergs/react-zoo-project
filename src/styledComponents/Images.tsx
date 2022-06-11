@@ -1,6 +1,11 @@
 import styled from "styled-components";
 
+interface IStyledImageProps {
+  width: string;
+  height: string;
+}
+
 export const StyledImage = styled.img`
-  width: 100%;
-  height: 100%;
+  width: ${(props: IStyledImageProps) => props.width || "100%"};
+  height: ${(props: IStyledImageProps) => props.height || "100%"};
 `;

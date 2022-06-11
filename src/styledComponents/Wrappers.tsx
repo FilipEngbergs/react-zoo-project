@@ -1,5 +1,27 @@
 import styled from "styled-components";
 
+interface IAnimalWrapperProps {
+  width?: string;
+  flexdirection?: string;
+  border: string;
+  transform: string;
+}
+interface IImageWrapperProps {
+  height: string;
+  border: string;
+}
+
+interface IParagraphWrapperProps {
+  width: string;
+  height: string;
+  border: string;
+  flexdirection: string;
+}
+
+interface IButtonWrapperProps {
+  height: string;
+}
+
 export const AnimalsWrapper = styled.div`
   display: flex;
   flex-direction: row;
@@ -10,28 +32,53 @@ export const AnimalsWrapper = styled.div`
 `;
 
 export const AnimalWrapper = styled.div`
-  width: 30%;
-  height: 450px;
-  border: 1px solid black;
+  display: flex;
+  flex-direction: ${(props: IAnimalWrapperProps) =>
+    props.flexdirection || "column"};
+  justify-content: center;
+  align-items: center;
+  width: ${(props: IAnimalWrapperProps) => props.width || "30%"};
+  height: 500px;
+  border: ${(props: IAnimalWrapperProps) => props.border || "1px solid black"};
   box-shadow: 5px 0px 8px 0px #888888;
-  cursor: pointer;
 
   &:hover {
-    transform: scale(110%);
-    z-index: 9;
+    transform: ${(props: IAnimalWrapperProps) =>
+      props.transform || "scale(100%)"};
+    z-index: 2;
     background-color: white;
   }
 `;
 
 export const ImageWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 90%;
   margin: 0 auto;
-  height: 50%;
-  border-bottom: 2px solid black;
+  height: ${(props: IImageWrapperProps) => props.height || "50%"};
+  border-bottom: ${(props: IImageWrapperProps) =>
+    props.border || "2px solid black"};
 `;
 
 export const ParagraphWrapper = styled.div`
-  width: 80%;
+  display: flex;
+  justify-content: center;
+  flex-direction: ${(props: IParagraphWrapperProps) =>
+    props.flexdirection || "row"};
+  gap: 10px;
+  width: ${(props: IParagraphWrapperProps) => props.width || "80%"};
   margin: 0 auto;
-  height: 30%;
+  height: ${(props: IParagraphWrapperProps) => props.height || "30%"};
+  border: ${(props: IParagraphWrapperProps) => props.border || "none"};
+`;
+
+export const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  height: ${(props: IButtonWrapperProps) => props.height || "15%"};
+`;
+
+export const HeadingWrapper = styled.div`
+  height: 10%;
 `;
