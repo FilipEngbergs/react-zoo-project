@@ -5,6 +5,7 @@ interface IAnimalWrapperProps {
   flexdirection?: string;
   border: string;
   transform: string;
+  height: string;
 }
 interface IImageWrapperProps {
   height: string;
@@ -22,6 +23,15 @@ interface IButtonWrapperProps {
   height: string;
 }
 
+export const StyledWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items center;
+  width: 100%;
+  height: 20%;
+`;
+
 export const AnimalsWrapper = styled.div`
   display: flex;
   flex-direction: row;
@@ -38,7 +48,7 @@ export const AnimalWrapper = styled.div`
   justify-content: center;
   align-items: center;
   width: ${(props: IAnimalWrapperProps) => props.width || "30%"};
-  height: 500px;
+  height: ${(props: IAnimalWrapperProps) => props.height || "500px"};
   border: ${(props: IAnimalWrapperProps) => props.border || "1px solid black"};
   box-shadow: 5px 0px 8px 0px #888888;
 
@@ -64,6 +74,7 @@ export const ImageWrapper = styled.div`
 export const ParagraphWrapper = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
   flex-direction: ${(props: IParagraphWrapperProps) =>
     props.flexdirection || "row"};
   gap: 10px;

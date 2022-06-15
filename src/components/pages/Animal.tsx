@@ -1,35 +1,73 @@
 import { IAnimal } from "../../models/IAnimal";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   AnimalWrapper,
   ButtonWrapper,
   HeadingWrapper,
   ImageWrapper,
   ParagraphWrapper,
+  StyledWrapper,
 } from "../../styledComponents/Wrappers";
 import { StyledHeading } from "../../styledComponents/Headings";
 import { StyledImage } from "../../styledComponents/Images";
 import { StyledParagraph } from "../../styledComponents/Paragraphs";
 import { StyledButton } from "../../styledComponents/Buttons";
+import { formatted_date } from "../../functions/formatter";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFaceSmile, faFaceFrown } from "@fortawesome/free-solid-svg-icons";
 
-interface IAnimalProps {
-  animals: IAnimal[];
-}
-
-export const Animal = (props: IAnimalProps) => {
+export const Animal = () => {
   const [zooAnimal, setZooAnimal] = useState<IAnimal>();
 
   let params = useParams();
 
   useEffect(() => {
-    props.animals.forEach((animal) => {
-      const idToString = animal.id.toString();
+    const animals = localStorage.getItem("animals" || "");
+    if (animals) {
+      let localStorageAnimalList: IAnimal[] = JSON.parse(animals);
+      const animal = localStorageAnimalList.find((animal) => {
+        if (params.id) {
+          return animal.id === parseInt(params.id);
+        }
+        return animal;
+      });
+      setZooAnimal(animal);
+    }
+  }, [params]);
+
+  function handleFed() {
+    if (zooAnimal) {
+      const idToString = zooAnimal.id.toString();
+
       if (idToString === params.id) {
-        setZooAnimal(animal);
+        const localStorageAnimalsList: string =
+          localStorage.getItem("animals") || "";
+        const jsonAnimalsList = JSON.parse(localStorageAnimalsList);
+
+        jsonAnimalsList.forEach((animal: IAnimal) => {
+          let idToString = animal.id.toString();
+          if (idToString === params.id) {
+            if (animal.lastFed !== "") {
+              animal.lastFed = "";
+            }
+            let newDate = formatted_date(animal.lastFed);
+            animal.isFed = true;
+            animal.lastFed = newDate;
+          }
+        });
+
+        localStorage.setItem("animals", JSON.stringify(jsonAnimalsList));
+
+        let animalObject = { ...zooAnimal };
+        let newDate = formatted_date(animalObject.lastFed);
+        animalObject.isFed = true;
+        animalObject.lastFed = "";
+        animalObject.lastFed = newDate;
+        setZooAnimal(animalObject);
       }
-    });
-  });
+    }
+  }
 
   return (
     <>
@@ -38,6 +76,7 @@ export const Animal = (props: IAnimalProps) => {
         flexdirection="row"
         width="100%"
         transform="scale(100%)"
+        height="600px"
       >
         <ImageWrapper height="100%" border="3px solid black">
           <StyledHeading fontsize="36px">{zooAnimal?.name}</StyledHeading>
@@ -47,15 +86,46 @@ export const Animal = (props: IAnimalProps) => {
             src={zooAnimal?.imageUrl}
             alt={zooAnimal?.name}
           ></StyledImage>
-          <ParagraphWrapper
-            width="90%"
-            height="20%"
-            border="none"
-            flexdirection=""
-          >
-            <b>Matad: </b>
-            <StyledParagraph margin="0px">{zooAnimal?.lastFed}</StyledParagraph>
-          </ParagraphWrapper>
+          <StyledWrapper>
+            <ParagraphWrapper
+              width="50%"
+              height="100%"
+              border="none"
+              flexdirection="column"
+            >
+              <b>Status:</b>
+              {zooAnimal?.isFed ? (
+                <FontAwesomeIcon
+                  color="green"
+                  fontSize="30px"
+                  icon={faFaceSmile}
+                />
+              ) : (
+                <FontAwesomeIcon
+                  color="red"
+                  fontSize="30px"
+                  icon={faFaceFrown}
+                />
+              )}
+            </ParagraphWrapper>
+            <ParagraphWrapper
+              width="50%"
+              height="100%"
+              border="none"
+              flexdirection="column"
+            >
+              <b>Matad: </b>
+              {zooAnimal?.isFed ? (
+                <StyledParagraph margin="0px">
+                  {zooAnimal?.lastFed}
+                </StyledParagraph>
+              ) : (
+                <>
+                  <StyledParagraph margin="">Inte matad!</StyledParagraph>
+                </>
+              )}
+            </ParagraphWrapper>
+          </StyledWrapper>
         </ImageWrapper>
         <ParagraphWrapper
           height="100%"
@@ -70,9 +140,15 @@ export const Animal = (props: IAnimalProps) => {
             {zooAnimal?.longDescription}
           </StyledParagraph>
           <ButtonWrapper height="10%">
-            <StyledButton transform="scale(110%)">
-              Mata {zooAnimal?.name}
-            </StyledButton>
+            {zooAnimal?.isFed ? (
+              <></>
+            ) : (
+              <Link to={"/animals/" + zooAnimal?.id} key={zooAnimal?.id}>
+                <StyledButton transform="scale(110%)" onClick={handleFed}>
+                  Mata {zooAnimal?.name}
+                </StyledButton>
+              </Link>
+            )}
           </ButtonWrapper>
         </ParagraphWrapper>
       </AnimalWrapper>

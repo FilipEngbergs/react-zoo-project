@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import { Layout } from "./components/layout";
@@ -7,13 +7,25 @@ import { Animal } from "./components/pages/Animal";
 import { Animals } from "./components/pages/Animals";
 import { Home } from "./components/pages/Home";
 import { IAnimal } from "./models/IAnimal";
+import AnimalService from "./services/ZooService";
 
 function App() {
   const [zooAnimals, setZooAnimals] = useState<IAnimal[]>([]);
 
-  function showAnimals(animals: IAnimal[]) {
-    setZooAnimals(animals);
-  }
+  useEffect(() => {
+    let localStorageDataList = localStorage.getItem("animals") || "";
+
+    if (localStorageDataList === "") {
+      let service = new AnimalService();
+      service.getAnimals().then((animals) => {
+        localStorage.setItem("animals", JSON.stringify(animals));
+        setZooAnimals(animals);
+      });
+    } else {
+      let getList: IAnimal[] = JSON.parse(localStorageDataList);
+      setZooAnimals(getList);
+    }
+  }, []);
 
   return (
     <>
@@ -23,14 +35,9 @@ function App() {
             <Route index element={<Home />}></Route>
             <Route
               path="/animals"
-              element={
-                <Animals animals={zooAnimals} showAnimals={showAnimals} />
-              }
+              element={<Animals animals={zooAnimals} />}
             ></Route>
-            <Route
-              path="/animals/:id"
-              element={<Animal animals={zooAnimals} />}
-            ></Route>
+            <Route path="/animals/:id" element={<Animal />}></Route>
             <Route path="*" element={<NotFound />}></Route>
           </Route>
         </Routes>
