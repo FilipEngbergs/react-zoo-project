@@ -1,6 +1,6 @@
 import { IAnimal } from "../../models/IAnimal";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   AnimalWrapper,
   ButtonWrapper,
@@ -30,7 +30,6 @@ export const Animal = () => {
         if (params.id) {
           return animal.id === parseInt(params.id);
         }
-        return animal;
       });
       setZooAnimal(animal);
     }
@@ -60,9 +59,9 @@ export const Animal = () => {
         localStorage.setItem("animals", JSON.stringify(jsonAnimalsList));
 
         let animalObject = { ...zooAnimal };
-        let newDate = formatted_date(animalObject.lastFed);
         animalObject.isFed = true;
         animalObject.lastFed = "";
+        let newDate = formatted_date(animalObject.lastFed);
         animalObject.lastFed = newDate;
         setZooAnimal(animalObject);
       }
@@ -86,7 +85,7 @@ export const Animal = () => {
             src={zooAnimal?.imageUrl}
             alt={zooAnimal?.name}
           ></StyledImage>
-          <StyledWrapper>
+          <StyledWrapper url="" height="">
             <ParagraphWrapper
               width="50%"
               height="100%"
@@ -143,11 +142,13 @@ export const Animal = () => {
             {zooAnimal?.isFed ? (
               <></>
             ) : (
-              <Link to={"/animals/" + zooAnimal?.id} key={zooAnimal?.id}>
-                <StyledButton transform="scale(110%)" onClick={handleFed}>
-                  Mata {zooAnimal?.name}
-                </StyledButton>
-              </Link>
+              <StyledButton
+                width="150px"
+                transform="scale(110%)"
+                onClick={handleFed}
+              >
+                Mata {zooAnimal?.name}
+              </StyledButton>
             )}
           </ButtonWrapper>
         </ParagraphWrapper>

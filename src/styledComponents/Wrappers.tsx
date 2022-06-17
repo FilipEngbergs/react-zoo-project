@@ -23,13 +23,20 @@ interface IButtonWrapperProps {
   height: string;
 }
 
+interface IStyledWrapperProps {
+  url: string;
+  height: string;
+}
+
 export const StyledWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items center;
   width: 100%;
-  height: 20%;
+  height: ${(props: IStyledWrapperProps) => props.height || ""};
+  background-image: ${(props: IStyledWrapperProps) => props.url || ""};
+  background-size: cover;
 `;
 
 export const AnimalsWrapper = styled.div`

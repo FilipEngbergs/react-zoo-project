@@ -47,7 +47,9 @@ export const Animals = (props: IAnimalsProps) => {
             </ParagraphWrapper>
             <ButtonWrapper height="">
               <Link to={"/animals/" + animal.id} key={animal.id}>
-                <StyledButton transform="">Visa mer!</StyledButton>
+                <StyledButton width="" transform="">
+                  Visa mer!
+                </StyledButton>
               </Link>
             </ButtonWrapper>
           </AnimalWrapper>

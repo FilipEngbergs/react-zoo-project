@@ -17,11 +17,11 @@ export const Layout = () => {
         </nav>
       </header>
       <section>
-        <aside></aside>
+        <aside className="aside1"></aside>
         <main>
           <Outlet></Outlet>
         </main>
-        <aside></aside>
+        <aside className="aside2"></aside>
       </section>
       <footer></footer>
     </div>
