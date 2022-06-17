@@ -16,6 +16,7 @@ import { StyledButton } from "../../styledComponents/Buttons";
 import { formatted_date } from "../../functions/formatter";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFaceSmile, faFaceFrown } from "@fortawesome/free-solid-svg-icons";
+import { dateChecker } from "../../functions/dateChecker";
 
 export const Animal = () => {
   const [zooAnimal, setZooAnimal] = useState<IAnimal>();
@@ -29,6 +30,8 @@ export const Animal = () => {
       const animal = localStorageAnimalList.find((animal) => {
         if (params.id) {
           return animal.id === parseInt(params.id);
+        } else {
+          return -1;
         }
       });
       setZooAnimal(animal);
@@ -46,6 +49,7 @@ export const Animal = () => {
 
         jsonAnimalsList.forEach((animal: IAnimal) => {
           let idToString = animal.id.toString();
+          var startTime = new Date().getTime();
           if (idToString === params.id) {
             if (animal.lastFed !== "") {
               animal.lastFed = "";
@@ -53,6 +57,14 @@ export const Animal = () => {
             let newDate = formatted_date(animal.lastFed);
             animal.isFed = true;
             animal.lastFed = newDate;
+            const interval = setInterval(() => {
+              if (new Date().getTime() - startTime > 10800000) {
+                clearInterval(interval);
+              }
+              dateChecker(animal);
+              setZooAnimal(animal);
+              localStorage.setItem("animals", JSON.stringify(jsonAnimalsList));
+            }, 10800000);
           }
         });
 
@@ -120,7 +132,9 @@ export const Animal = () => {
                 </StyledParagraph>
               ) : (
                 <>
-                  <StyledParagraph margin="">Inte matad!</StyledParagraph>
+                  <StyledParagraph margin="">
+                    {zooAnimal?.lastFed}
+                  </StyledParagraph>
                 </>
               )}
             </ParagraphWrapper>
@@ -143,8 +157,11 @@ export const Animal = () => {
               <></>
             ) : (
               <StyledButton
+                fontsize=""
+                backgroundColor="none"
                 width="150px"
                 transform="scale(110%)"
+                color=""
                 onClick={handleFed}
               >
                 Mata {zooAnimal?.name}
